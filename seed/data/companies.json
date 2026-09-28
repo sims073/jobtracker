@@ -1,0 +1,78 @@
+[
+  {
+    "name": "TCS",
+    "type": "Service-based",
+    "about": "One of India's largest IT services companies, hires freshers in bulk every year through campus and off-campus drives (TCS NQT).",
+    "requirements": ["60%+ throughout academics (varies by drive)", "No active backlogs at the time of hiring", "Basic programming in any one language", "Good communication for the HR round"],
+    "stages": [
+      {"name": "Online Assessment", "what_tested": "Numerical ability, verbal ability, reasoning, and basic coding (NQT pattern).", "tips": "Practice aptitude daily for 2-3 weeks; attempt previous years' NQT papers."},
+      {"name": "Technical Interview", "what_tested": "Core CS subjects (OOP, DBMS, OS), your projects, and basic coding.", "tips": "Be ready to explain every project line by line; revise CS fundamentals."},
+      {"name": "HR", "what_tested": "Communication, willingness to relocate, career goals.", "tips": "Be honest and clear about your goals; keep answers structured."}
+    ]
+  },
+  {
+    "name": "Infosys",
+    "type": "Service-based",
+    "about": "Global IT services company; the InfyTQ / campus drive is a common fresher entry point.",
+    "requirements": ["60%+ in 10th, 12th and degree (varies by drive)", "No standing backlogs", "Pseudocode/logic building skills"],
+    "stages": [
+      {"name": "Online Assessment", "what_tested": "Quant, logical reasoning, verbal, pseudocode.", "tips": "Focus on pseudocode-style questions, not just raw coding."},
+      {"name": "Technical + HR Interview", "what_tested": "Fundamentals, a coding problem, and behavioral questions, often combined into one round.", "tips": "Prepare a short, confident project walkthrough."}
+    ]
+  },
+  {
+    "name": "Wipro",
+    "type": "Service-based",
+    "about": "IT services company; hires freshers through WILP/Elite NLTH drives.",
+    "requirements": ["60%+ academics (varies)", "No active backlogs", "Basic aptitude and coding"],
+    "stages": [
+      {"name": "Online Assessment", "what_tested": "Aptitude, verbal, and coding (1-2 problems).", "tips": "Practice basic DSA problems: arrays, strings, loops."},
+      {"name": "Technical Interview", "what_tested": "Programming basics, CS fundamentals, resume projects.", "tips": "Know time complexity of the code you write."},
+      {"name": "HR", "what_tested": "Communication and culture fit.", "tips": "Research the company's values briefly before the round."}
+    ]
+  },
+  {
+    "name": "Google",
+    "type": "Product-based",
+    "about": "Global product company; fresher hiring (STEP/new grad) is highly selective and DSA-heavy.",
+    "requirements": ["Strong DSA and problem solving", "Good CS fundamentals (OS, DBMS, Networks)", "1-2 solid personal or open-source projects"],
+    "stages": [
+      {"name": "Online Assessment", "what_tested": "2-3 DSA coding problems, medium to hard difficulty.", "tips": "Practice 150+ problems on arrays, trees, graphs, DP before applying."},
+      {"name": "Technical Interviews (2-4 rounds)", "what_tested": "DSA problem solving on a shared doc/whiteboard, and how you communicate your approach.", "tips": "Think out loud, discuss complexity, and test your code with an example."},
+      {"name": "Hiring Committee / HR", "what_tested": "Overall profile review and googleyness/leadership questions.", "tips": "Have specific stories ready (STAR format) for behavioral questions."}
+    ]
+  },
+  {
+    "name": "Amazon",
+    "type": "Product-based",
+    "about": "E-commerce and cloud (AWS) company; fresher SDE hiring is DSA-heavy and leadership-principle driven.",
+    "requirements": ["Strong DSA (arrays, trees, graphs, DP)", "Basic system design awareness", "Familiarity with Amazon's Leadership Principles"],
+    "stages": [
+      {"name": "Online Assessment", "what_tested": "2 coding problems plus a work-style/behavioral assessment.", "tips": "Solve within the time limit; practice on a timer."},
+      {"name": "Technical Interviews", "what_tested": "DSA coding plus 1 leadership-principle behavioral question per round.", "tips": "Prepare 6-8 STAR stories mapped to different leadership principles."},
+      {"name": "Bar Raiser", "what_tested": "A tougher, holistic round to maintain hiring quality.", "tips": "Stay calm, be honest about trade-offs in your answers."}
+    ]
+  },
+  {
+    "name": "Zoho",
+    "type": "Product-based",
+    "about": "Bootstrapped Indian product company known for a strong, practical fresher hiring process.",
+    "requirements": ["Strong logic building over rote DSA", "Good written aptitude", "Willingness to go through a multi-day process"],
+    "stages": [
+      {"name": "Written Aptitude + Coding", "what_tested": "Logic-heavy aptitude and 2 coding problems in C/Java/Python.", "tips": "Practice logic-building puzzles, not just standard DSA patterns."},
+      {"name": "Technical Interviews", "what_tested": "In-depth CS fundamentals and live coding.", "tips": "Be very clear on basics: pointers, OOP, DBMS normalization."},
+      {"name": "HR", "what_tested": "Fit and communication.", "tips": "Be genuine about why you'd like a product company."}
+    ]
+  },
+  {
+    "name": "Generic Startup",
+    "type": "Startup",
+    "about": "A representative early-stage tech startup profile: small team, fast hiring, practical skills over pedigree.",
+    "requirements": ["A demo-able project or GitHub profile", "Comfort with one full stack (frontend+backend)", "Fast learner, comfortable with ambiguity"],
+    "stages": [
+      {"name": "Resume + GitHub Screening", "what_tested": "Real projects over CGPA.", "tips": "Keep 2-3 polished, deployed projects with clean READMEs."},
+      {"name": "Take-home Assignment", "what_tested": "Practical ability to build a small feature end-to-end.", "tips": "Prioritize working code and clear documentation over completeness."},
+      {"name": "Founder/Team Interview", "what_tested": "Culture fit, ownership mindset, communication.", "tips": "Ask questions back; show genuine curiosity about the product."}
+    ]
+  }
+]

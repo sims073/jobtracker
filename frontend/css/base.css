@@ -1,0 +1,27 @@
+:root{
+  --bg:#0b1220; --bg2:#0f1830; --card:#121b33; --card2:#182545;
+  --line:#243357; --ink:#e7ecff; --mu:#8b97c2; --ac:#5b8cff; --ac2:#8f6bff;
+  --ok:#28c790; --warn:#ffb454; --bad:#ff6b6b; --radius:12px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Segoe UI",system-ui,sans-serif}
+h1,h2,h3{font-family:"Segoe UI",system-ui,sans-serif;margin:0 0 10px;letter-spacing:.2px}
+a{color:var(--ac);text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}
+.mu{color:var(--mu)}.ok{color:var(--ok)}.warn{color:var(--warn)}.bad{color:var(--bad)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 22px}
+.card{background:linear-gradient(160deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:var(--radius);padding:20px}
+input,select,textarea,button{font:inherit;padding:9px 11px;border-radius:8px;border:1px solid var(--line);background:#0e1730;color:var(--ink)}
+textarea{width:100%;resize:vertical}
+button{background:var(--ac);border:0;color:#fff;cursor:pointer;transition:transform .12s,filter .12s}
+button:hover{filter:brightness(1.1)}button:active{transform:scale(.97)}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+button.danger{background:var(--bad)}
+input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.row{display:flex;gap:16px;flex-wrap:wrap}.col{flex:1;min-width:280px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.chip{display:inline-block;background:#1a2749;border:1px solid var(--line);border-radius:20px;padding:3px 12px;font-size:13px;margin:2px}
+.badge{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(90deg,var(--ac),var(--ac2));padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600}
+::-webkit-scrollbar{height:8px;width:8px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+@media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}

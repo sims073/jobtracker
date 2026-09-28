@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Job Tracker — Land your first IT job</title>
+<link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/components.css"><link rel="stylesheet" href="/css/animations.css">
+<style>
+.blob1{width:320px;height:320px;background:var(--ac);top:-80px;left:-60px}
+.blob2{width:260px;height:260px;background:var(--ac2);top:40px;right:-40px;animation-delay:2s}
+.stats{display:flex;gap:40px;justify-content:center;margin-top:40px;flex-wrap:wrap}
+.stat{text-align:center}
+.feat{padding:16px}
+.feat .ic{font-size:26px}
+.cta-row{display:flex;gap:12px;justify-content:center;margin-top:8px}
+.stages{display:flex;gap:0;overflow-x:auto;padding:20px 0}
+.stage{min-width:170px;padding:14px;border-right:1px dashed var(--line)}
+.stage:last-child{border:0}
+.footer{padding:40px 0;text-align:center;color:var(--mu);border-top:1px solid var(--line);margin-top:40px}
+</style><link rel="stylesheet" href="/css/theme3d.css"></head>
+<body>
+<header class="landing-nav"><div class="wrap" style="display:flex;align-items:center;gap:16px;padding:14px 22px">
+  <span class="brand">Job Tracker</span>
+  <span style="flex:1"></span>
+  <a href="/login.html">Log in</a>
+  <button onclick="location.href='/login.html?mode=register'">Get started</button>
+</div></header>
+
+<section class="hero wrap">
+  <div class="blob blob1"></div><div class="blob blob2"></div>
+  <h1 class="reveal in">Know exactly what an IT job needs from you — then go get it.</h1>
+  <p class="reveal in">Self-analyze your readiness for real IT roles, follow a role-wise roadmap, track applications on a Kanban board, and connect with other students doing the same.</p>
+  <div class="cta-row reveal in"><button onclick="location.href='/login.html?mode=register'">Create free account</button><button class="ghost" onclick="location.href='/login.html'">I already have one</button></div>
+  <div class="stats">
+    <div class="stat"><div class="counter" data-count="7">0</div><div class="mu">IT roles covered</div></div>
+    <div class="stat"><div class="counter" data-count="45">0</div><div class="mu">roadmap topics</div></div>
+    <div class="stat"><div class="counter" data-count="8">0</div><div class="mu">hiring stages mapped</div></div>
+  </div>
+</section>
+
+<section class="wrap grid g3" style="margin-top:30px">
+  <div class="card feat reveal"><div class="ic">🧭</div><h3>Self Analyzer</h3><p class="mu">A role-wise readiness score built from your skills, roadmap progress, and application activity — plus what to fix next.</p></div>
+  <div class="card feat reveal"><div class="ic">🗺️</div><h3>Role roadmaps</h3><p class="mu">Backend, Frontend, Full Stack, Data, DevOps, QA — a checklist of exactly what to learn, with resources.</p></div>
+  <div class="card feat reveal"><div class="ic">🏢</div><h3>Hiring guide</h3><p class="mu">See each company's real hiring stages — what's tested and how to crack it — for service, product and startup companies.</p></div>
+  <div class="card feat reveal"><div class="ic">📋</div><h3>Application tracker</h3><p class="mu">A drag-and-drop Kanban board through Applied → Assessment → Interviews → Offer, with follow-up reminders.</p></div>
+  <div class="card feat reveal"><div class="ic">🤝</div><h3>Connections</h3><p class="mu">Find and connect with other freshers by role or skill, and message the ones you're connected with.</p></div>
+  <div class="card feat reveal"><div class="ic">🏆</div><h3>XP, streaks & badges</h3><p class="mu">Daily streaks and XP for completing topics and practice questions keep momentum visible.</p></div>
+</section>
+
+<section class="wrap card reveal" style="margin-top:30px">
+  <h3>A typical IT fresher hiring process</h3>
+  <div class="stages mu">
+    <div class="stage"><b class="ink" style="color:var(--ink)">1. Online Assessment</b><br>Aptitude + coding</div>
+    <div class="stage"><b style="color:var(--ink)">2. Coding Round</b><br>DSA problems</div>
+    <div class="stage"><b style="color:var(--ink)">3. Technical Interview</b><br>Fundamentals + projects</div>
+    <div class="stage"><b style="color:var(--ink)">4. System Design</b><br>For some product roles</div>
+    <div class="stage"><b style="color:var(--ink)">5. HR</b><br>Fit & communication</div>
+    <div class="stage"><b style="color:var(--ink)">6. Offer 🎉</b></div>
+  </div>
+</section>
+
+<div class="footer">Job Tracker — built for IT freshers.</div>
+<script src="/js/api.js"></script><script src="/js/ui.js"></script><script src="/js/animations.js"></script>
+<script src="/js/scene3d.js"></script></body></html>

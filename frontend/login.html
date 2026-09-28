@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Job Tracker — Log in</title>
+<link rel="stylesheet" href="/css/base.css"><link rel="stylesheet" href="/css/components.css"><link rel="stylesheet" href="/css/animations.css">
+<style>body{display:grid;place-items:center;min-height:100vh}.box{width:380px;display:grid;gap:10px}.tabs{display:flex;gap:8px;margin-bottom:6px}.tabs a{flex:1;text-align:center;padding:8px;border-radius:8px;border:1px solid var(--line)}.tabs a.on{background:var(--ac);color:#fff}</style>
+<link rel="stylesheet" href="/css/theme3d.css"></head><body>
+<div class="card box pop">
+  <span class="brand" style="font-size:22px">Job Tracker</span>
+  <div class="tabs"><a id="tabLogin" onclick="mode(false)">Log in</a><a id="tabReg" onclick="mode(true)">Sign up</a></div>
+  <input id="n" placeholder="Full name" style="display:none">
+  <input id="e" placeholder="Email">
+  <input id="p" type="password" placeholder="Password (min 6 characters)">
+  <button id="go" onclick="submit()">Log in</button>
+  <p class="mu" id="err" style="min-height:18px"></p>
+</div>
+<script src="/js/api.js"></script>
+<script>
+let reg = new URLSearchParams(location.search).get("mode") === "register";
+function mode(r){reg=r;$("#n").style.display=r?"block":"none";$("#go").textContent=r?"Create account":"Log in";
+  $("#tabLogin").classList.toggle("on",!r);$("#tabReg").classList.toggle("on",r);$("#err").textContent=""}
+const $=s=>document.querySelector(s);
+mode(reg);
+async function submit(){
+  $("#err").textContent="";
+  try{
+    const body=reg?{name:$("#n").value,email:$("#e").value,password:$("#p").value}:{email:$("#e").value,password:$("#p").value};
+    const r=await api(reg?"/auth/register":"/auth/login","POST",body);
+    setToken(r.token); location.href="/app/dashboard.html";
+  }catch(err){ $("#err").textContent=err.message; $("#err").style.color="var(--bad)"; }
+}
+</script>
+<script src="/js/scene3d.js"></script></body></html>

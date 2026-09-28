@@ -1,0 +1,9 @@
+fastapi
+uvicorn[standard]
+pymongo>=4.9
+certifi
+pyjwt
+pydantic
+pytest
+pytest-asyncio
+httpx
