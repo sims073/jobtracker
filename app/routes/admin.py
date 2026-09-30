@@ -11,6 +11,7 @@ router = APIRouter(prefix="/api/admin", tags=["admin"], dependencies=[Depends(re
 @router.get("/stats")
 async def stats():
     total_users = await users.count_documents({})
+    
     active_users = await users.count_documents({"is_active": True})
     total_apps = await applications.count_documents({})
     funnel_cursor = applications.aggregate([{"$group": {"_id": "$stage", "count": {"$sum": 1}}}])

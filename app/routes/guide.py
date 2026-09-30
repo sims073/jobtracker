@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from ..auth import current_user
 from ..database import ser
 from ..models import companies, roadmaps, announcements
-from ..services import scoring
+from ..services import scoring, rules
 
 router = APIRouter(prefix="/api/guide", tags=["guide"])
 
@@ -15,7 +15,8 @@ async def list_announcements(u=Depends(current_user)):
 @router.get("/meta")
 async def meta():
     return {"stages": scoring.STAGES, "roles": list(scoring.ROLE_WEIGHTS),
-            "company_types": scoring.COMPANY_TYPES, "skills": scoring.SKILLS}
+            "company_types": scoring.COMPANY_TYPES, "skills": scoring.SKILLS,
+            "streams": rules.STREAMS, "interests": rules.INTERESTS}
 
 
 @router.get("/companies")

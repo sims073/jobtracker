@@ -1,6 +1,12 @@
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const opts = (arr, val) => arr.map(x => `<option ${x === val ? "selected" : ""}>${esc(x)}</option>`).join("");
 
+function avatarHTML(p, size = "") {
+  const cls = "avatar" + (size ? " " + size : "");
+  if (p && p.avatar) return `<img class="${cls}" src="${esc(p.avatar)}" alt="">`;
+  return `<span class="${cls}">${esc(((p && p.name) || "?").trim().charAt(0).toUpperCase())}</span>`;
+}
+
 function toast(msg) {
   const el = document.getElementById("toast");
   if (!el) return;
@@ -24,6 +30,7 @@ async function renderNav(active) {
     <header class="top"><div class="wrap">
       <span class="brand">Job Tracker</span>
       <nav class="main">${TABS.map(([k, l]) => `<a href="/app/${k}.html" class="${k === active ? "on" : ""}">${l}</a>`).join("")}</nav>
+      <a href="/app/profile.html" title="My profile">${avatarHTML(me, "sm")}</a>
       <span class="xp-pill">🔥 <span class="streak">${me.streak || 0}</span> day streak · ${me.xp || 0} XP</span>
       ${me.role === "admin" ? '<a href="/admin/index.html">Admin</a>' : ""}
       <a onclick="logout()">Log out</a>

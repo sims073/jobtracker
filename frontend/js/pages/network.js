@@ -9,7 +9,7 @@
     if (p.status === "received") return `<button onclick="respond('${p.conn_id}',true)">Accept</button>`;
     return `<button onclick="connect('${p.id}')">Connect</button>`;
   }
-  const personRow = p => `<div class="person"><a onclick="show('${p.id}')">${esc(p.name)}</a><span class="mu">${esc(p.headline || p.target_role || "")}</span>${connBtn(p)}</div>`;
+  const personRow = p => `<div class="person">${avatarHTML(p, "sm")}<a onclick="show('${p.id}')">${esc(p.name)}</a><span class="mu">@${esc(p.username || "")}</span><span class="mu">${esc(p.headline || p.target_role || "")}</span>${connBtn(p)}</div>`;
 
   async function drawAll() {
     const [c, results] = await Promise.all([api("/connections"), api("/users?q=" + encodeURIComponent(query))]);
@@ -17,15 +17,15 @@
       <div class="row">
         <div class="card col reveal in">
           <h3>Find people</h3>
-          <div class="row" style="margin-bottom:10px"><input id="q" placeholder="Name, role or headline" value="${esc(query)}" style="flex:1" onkeydown="if(event.key==='Enter')search()"><button onclick="search()">Search</button></div>
+          <div class="row" style="margin-bottom:10px"><input id="q" placeholder="Name, @username, role or headline" value="${esc(query)}" style="flex:1" onkeydown="if(event.key==='Enter')search()"><button onclick="search()">Search</button></div>
           <div id="results">${results.map(personRow).join("") || '<p class="mu">No matching people found.</p>'}</div>
         </div>
         <div class="card col reveal in">
           <h3>Requests (${c.incoming.length})</h3>
-          ${c.incoming.map(p => `<div class="person">${esc(p.name)}<span class="mu">${esc(p.headline || p.target_role || "")}</span><button onclick="respond('${p.conn_id}',true)">Accept</button><button class="ghost" onclick="respond('${p.conn_id}',false)">Ignore</button></div>`).join("") || '<p class="mu">No pending requests.</p>'}
+          ${c.incoming.map(p => `<div class="person">${avatarHTML(p, "sm")}${esc(p.name)}<span class="mu">${esc(p.headline || p.target_role || "")}</span><button onclick="respond('${p.conn_id}',true)">Accept</button><button class="ghost" onclick="respond('${p.conn_id}',false)">Ignore</button></div>`).join("") || '<p class="mu">No pending requests.</p>'}
           <h3 style="margin-top:16px">My connections (${c.friends.length})</h3>
-          ${c.friends.map(p => `<div class="person">${esc(p.name)}<span class="mu">${esc(p.headline || p.target_role || "")}</span><button class="ghost" onclick="openChat('${p.id}','${esc(p.name)}')">Message</button></div>`).join("") || '<p class="mu">No connections yet — search for people to connect with.</p>'}
-          ${c.sent.length ? `<h3 style="margin-top:16px">Sent (${c.sent.length})</h3>${c.sent.map(p => `<div class="person">${esc(p.name)}<span class="mu">Requested</span></div>`).join("")}` : ""}
+          ${c.friends.map(p => `<div class="person">${avatarHTML(p, "sm")}${esc(p.name)}<span class="mu">${esc(p.headline || p.target_role || "")}</span><button class="ghost" onclick="openChat('${p.id}','${esc(p.name)}')">Message</button><button class="ghost" onclick="removeConn('${p.conn_id}')">Remove</button></div>`).join("") || '<p class="mu">No connections yet — search for people to connect with.</p>'}
+          ${c.sent.length ? `<h3 style="margin-top:16px">Sent (${c.sent.length})</h3>${c.sent.map(p => `<div class="person">${avatarHTML(p, "sm")}${esc(p.name)}<span class="mu">Requested</span><button class="ghost" onclick="cancelReq('${p.conn_id}')">Cancel</button></div>`).join("")}` : ""}
         </div>
       </div>
       <div id="chatBox"></div>`;
@@ -33,6 +33,11 @@
   window.search = async () => { query = document.getElementById("q").value; await drawAll(); };
   window.connect = async id => { try { await api("/connections/" + id, "POST"); toast("Request sent"); await drawAll(); } catch (e) { toast(e.message); } };
   window.respond = async (cid, accept) => { await api("/connections/" + cid + "/respond", "POST", { accept }); await drawAll(); };
+  window.cancelReq = async cid => { try { await api("/connections/" + cid, "DELETE"); toast("Request cancelled"); await drawAll(); } catch (e) { toast(e.message); } };
+  window.removeConn = async cid => {
+    if (!confirm("Remove this connection?")) return;
+    try { await api("/connections/" + cid, "DELETE"); closeChat(); toast("Connection removed"); await drawAll(); } catch (e) { toast(e.message); }
+  };
   window.show = id => location.href = "/app/profile.html?id=" + id;
 
   let poll = null;
@@ -63,4 +68,12 @@
     catch (e) { toast(e.message); }
   };
   window.closeChat = () => { clearInterval(poll); document.getElementById("chatBox").innerHTML = ""; };
+  // opened from a profile's Message button: /app/network.html?chat=<user id>
+  const chatId = new URLSearchParams(location.search).get("chat");
+  if (chatId) {
+    try {
+      const f = (await api("/connections")).friends.find(x => x.id === chatId);
+      if (f) await openChat(f.id, f.name); else toast("You are not connected with this user");
+    } catch (e) { toast(e.message); }
+  }
 })();

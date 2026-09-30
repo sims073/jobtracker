@@ -27,7 +27,8 @@ async def my_connections(u=Depends(current_user)):
         if not o:
             continue
         item = {"conn_id": str(c["_id"]), "id": str(o["_id"]), "name": o["name"],
-                "headline": o.get("headline", ""), "target_role": o.get("target_role", "")}
+                "headline": o.get("headline", ""), "target_role": o.get("target_role", ""),
+                "username": o.get("username", ""), "avatar": o.get("avatar", "")}
         if c["status"] == "accepted":
             friends.append(item)
         elif c["receiver_id"] == u["_id"]:
@@ -57,6 +58,18 @@ async def respond(cid: str, b: Respond, u=Depends(current_user)):
         await connections.update_one({"_id": c["_id"]}, {"$set": {"status": "accepted"}})
     else:
         await connections.delete_one({"_id": c["_id"]})
+    return {"ok": True}
+
+
+@router.delete("/{cid}")
+async def remove_connection(cid: str, u=Depends(current_user)):
+    """Cancel a request you sent, or remove an accepted connection (either side)."""
+    c = await connections.find_one({"_id": oid(cid)})
+    if not c or u["_id"] not in (c["sender_id"], c["receiver_id"]):
+        raise HTTPException(404, "Connection not found")
+    if c["status"] == "pending" and c["sender_id"] != u["_id"]:
+        raise HTTPException(403, "Use Accept or Ignore for requests sent to you")
+    await connections.delete_one({"_id": c["_id"]})
     return {"ok": True}
 
 

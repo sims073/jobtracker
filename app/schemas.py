@@ -7,6 +7,12 @@ class Reg(BaseModel):
     name: str
     email: str
     password: str
+    username: str = ""      # optional for now; auto-generated from the email if empty
+
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
 
 
 class Login(BaseModel):
@@ -21,6 +27,11 @@ class ProfileIn(BaseModel):
     github: str = ""
     public_profile: bool = True
     show_stats: bool = True
+    # new fields: only saved when the client actually sends them
+    username: Optional[str] = None
+    bio: Optional[str] = None
+    stream: Optional[str] = None
+    interests: Optional[list[str]] = None
 
 
 class AchievementIn(BaseModel):

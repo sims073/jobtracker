@@ -102,3 +102,96 @@ def test_connections_flow():
 def test_admin_routes_require_admin_role():
     _, h = signup()
     assert client.get("/api/admin/stats", headers=h).status_code == 403
+
+
+# ---------- profile fields, username, avatar, password (Part 1) ----------
+PNG = b"\x89PNG\r\n\x1a\n" + b"0" * 32
+
+
+def test_username_rules_and_availability():
+    name = "u_" + uuid4().hex[:8]
+    assert client.get("/api/auth/username-available", params={"username": name}).json()["available"] is True
+    assert client.get("/api/auth/username-available", params={"username": "a!"}).json()["available"] is False
+    email = f"{uuid4().hex[:10]}@test.com"
+    r = client.post("/api/auth/register", json={"name": "T", "email": email, "password": "secret123", "username": name})
+    assert r.status_code == 200, r.text
+    assert client.get("/api/auth/username-available", params={"username": name}).json()["available"] is False
+    dup = client.post("/api/auth/register", json={"name": "T", "email": f"{uuid4().hex[:10]}@test.com",
+                                                   "password": "secret123", "username": name.upper()})
+    assert dup.status_code == 400
+    bad = client.post("/api/auth/register", json={"name": "T", "email": f"{uuid4().hex[:10]}@test.com",
+                                                   "password": "secret123", "username": "no spaces"})
+    assert bad.status_code == 400
+
+
+def test_signup_without_username_gets_one():
+    _, h = signup()
+    me = client.get("/api/me", headers=h).json()
+    assert len(me["username"]) >= 3 and me["interests"] == [] and me["avatar"] == ""
+
+
+def test_profile_fields_validation():
+    _, h = signup()
+    meta = client.get("/api/guide/meta").json()
+    assert len(meta["interests"]) == 10
+    ok = {"bio": "Final year CS student", "stream": meta["streams"][0], "interests": meta["interests"][:3]}
+    assert client.put("/api/me", json=ok, headers=h).status_code == 200
+    me = client.get("/api/me", headers=h).json()
+    assert me["bio"] == ok["bio"] and me["interests"] == ok["interests"]
+    assert client.put("/api/me", json={"interests": ["Nonsense"]}, headers=h).status_code == 400
+    assert client.put("/api/me", json={"interests": meta["interests"][:6]}, headers=h).status_code == 400
+    assert client.put("/api/me", json={"stream": "Wizardry"}, headers=h).status_code == 400
+    assert client.put("/api/me", json={"bio": "x" * 301}, headers=h).status_code == 400
+    # an old-style save (no new fields) must not wipe them
+    assert client.put("/api/me", json={"headline": "hi"}, headers=h).status_code == 200
+    assert client.get("/api/me", headers=h).json()["bio"] == ok["bio"]
+
+
+def test_avatar_upload_and_remove():
+    _, h = signup()
+    assert client.post("/api/me/avatar", files={"file": ("a.txt", b"not an image", "text/plain")}, headers=h).status_code == 400
+    r = client.post("/api/me/avatar", files={"file": ("a.png", PNG, "image/png")}, headers=h)
+    assert r.status_code == 200, r.text
+    url = r.json()["avatar"]
+    assert client.get(url).status_code == 200
+    assert client.get("/api/me", headers=h).json()["avatar"] == url
+    assert client.delete("/api/me/avatar", headers=h).status_code == 200
+    assert client.get("/api/me", headers=h).json()["avatar"] == ""
+
+
+def test_change_password():
+    email, h = signup()
+    assert client.post("/api/auth/change-password", json={"current_password": "wrong", "new_password": "newpass1"}, headers=h).status_code == 400
+    assert client.post("/api/auth/change-password", json={"current_password": "secret123", "new_password": "123"}, headers=h).status_code == 400
+    assert client.post("/api/auth/change-password", json={"current_password": "secret123", "new_password": "newpass1"}, headers=h).status_code == 200
+    assert client.post("/api/auth/login", json={"email": email, "password": "newpass1"}).status_code == 200
+    assert client.post("/api/auth/login", json={"email": email, "password": "secret123"}).status_code == 400
+
+
+# ---------- Part 3: achievements edit, cancel / remove connection ----------
+def test_achievement_edit():
+    _, h = signup()
+    a = client.post("/api/achievements", json={"title": "Hack", "type": "Hackathon"}, headers=h).json()
+    assert client.post("/api/achievements", json={"title": "x", "link": "javascript:alert(1)"}, headers=h).status_code == 400
+    r = client.put("/api/achievements/" + a["id"], json={"title": "Hack 2", "type": "Project", "link": "https://x.dev"}, headers=h)
+    assert r.status_code == 200, r.text
+    got = client.get("/api/achievements", headers=h).json()[0]
+    assert got["title"] == "Hack 2" and got["type"] == "Project" and got["id"] == a["id"]
+    assert client.put("/api/achievements/nope", json={"title": "z"}, headers=h).status_code == 404
+    assert client.put("/api/achievements/" + a["id"], json={"title": " "}, headers=h).status_code == 400
+
+
+def test_cancel_and_remove_connection():
+    _, ha = signup(); _, hb = signup(); _, hc = signup()
+    bid = client.get("/api/me", headers=hb).json()["id"]
+    assert client.post("/api/connections/" + bid, headers=ha).status_code == 200
+    cid = client.get("/api/connections", headers=ha).json()["sent"][0]["conn_id"]
+    assert client.delete("/api/connections/" + cid, headers=hb).status_code == 403   # receiver must Accept/Ignore
+    assert client.delete("/api/connections/" + cid, headers=hc).status_code == 404   # outsider
+    assert client.delete("/api/connections/" + cid, headers=ha).status_code == 200   # sender cancels
+    assert client.get("/api/connections", headers=ha).json()["sent"] == []
+    client.post("/api/connections/" + bid, headers=ha)
+    cid = client.get("/api/connections", headers=hb).json()["incoming"][0]["conn_id"]
+    client.post(f"/api/connections/{cid}/respond", json={"accept": True}, headers=hb)
+    assert client.delete("/api/connections/" + cid, headers=hb).status_code == 200   # either side can remove
+    assert client.get("/api/connections", headers=ha).json()["friends"] == []

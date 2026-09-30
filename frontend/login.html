@@ -8,6 +8,8 @@
   <span class="brand" style="font-size:22px">Job Tracker</span>
   <div class="tabs"><a id="tabLogin" onclick="mode(false)">Log in</a><a id="tabReg" onclick="mode(true)">Sign up</a></div>
   <input id="n" placeholder="Full name" style="display:none">
+  <input id="u" placeholder="Username (e.g. kartik_01)" maxlength="20" style="display:none" oninput="checkU()">
+  <span class="mu" id="uh" style="font-size:12px;min-height:16px;display:none"></span>
   <input id="e" placeholder="Email">
   <input id="p" type="password" placeholder="Password (min 6 characters)">
   <button id="go" onclick="submit()">Log in</button>
@@ -16,14 +18,21 @@
 <script src="/js/api.js"></script>
 <script>
 let reg = new URLSearchParams(location.search).get("mode") === "register";
-function mode(r){reg=r;$("#n").style.display=r?"block":"none";$("#go").textContent=r?"Create account":"Log in";
+function mode(r){reg=r;$("#n").style.display=r?"block":"none";$("#u").style.display=r?"block":"none";$("#uh").style.display=r?"block":"none";$("#go").textContent=r?"Create account":"Log in";
   $("#tabLogin").classList.toggle("on",!r);$("#tabReg").classList.toggle("on",r);$("#err").textContent=""}
 const $=s=>document.querySelector(s);
 mode(reg);
+let ut;
+function checkU(){
+  clearTimeout(ut);const h=$("#uh"),name=$("#u").value.trim().toLowerCase().replace(/^@/,"");
+  if(!name){h.textContent="";return}
+  ut=setTimeout(async()=>{try{const r=await api("/auth/username-available?username="+encodeURIComponent(name));
+    h.textContent=r.available?"✓ Available":r.reason;h.style.color=r.available?"var(--ok)":"var(--bad)"}catch(e){}},350);
+}
 async function submit(){
   $("#err").textContent="";
   try{
-    const body=reg?{name:$("#n").value,email:$("#e").value,password:$("#p").value}:{email:$("#e").value,password:$("#p").value};
+    const body=reg?{name:$("#n").value,username:$("#u").value,email:$("#e").value,password:$("#p").value}:{email:$("#e").value,password:$("#p").value};
     const r=await api(reg?"/auth/register":"/auth/login","POST",body);
     setToken(r.token); location.href="/app/dashboard.html";
   }catch(err){ $("#err").textContent=err.message; $("#err").style.color="var(--bad)"; }
